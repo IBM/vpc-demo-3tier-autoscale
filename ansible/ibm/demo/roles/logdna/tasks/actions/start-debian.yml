@@ -1,0 +1,15 @@
+---
+
+# Start logdna
+- name: Activate logdna service
+  become: true
+  become_method: sudo
+  shell: "update-rc.d logdna-agent defaults"
+
+- name: Start logdna
+  become: true
+  become_method: sudo
+  service:
+    name: logdna-agent
+    enabled: true
+    state: started

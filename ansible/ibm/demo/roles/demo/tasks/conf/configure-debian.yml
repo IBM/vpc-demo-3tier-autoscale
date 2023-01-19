@@ -1,0 +1,21 @@
+---
+# Configure service
+
+- name: Create demo service
+  ansible.builtin.template:
+    src: "{{ role_path }}/templates/service-debian.tpl"
+    dest: "/etc/systemd/system/{{ demo_name }}.service"
+    owner: root
+    group: root
+    mode: '0755'
+
+# Start Demo
+
+- name: Start Demo
+  become: true
+  become_method: sudo
+  service:
+    name: "{{ demo_name }}"
+    enabled: true
+    state: started
+

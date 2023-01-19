@@ -1,0 +1,10 @@
+---
+# sysdig defaults
+# The following variables should be passed to the environment
+#    sysdig_key
+#    sysdig_port
+#    sysdig_endpoint
+
+sysdig_install: True
+sysdig_install_type: "service"
+sysdig_tags: ""

@@ -1,0 +1,104 @@
+[
+  {
+    "description": "3 Tier Application Monitoring",
+    "name": "3 Tier Application Monitoring",
+    "panel": [
+      {
+        "description": "Web Layer CPU Utilization",
+        "height": 6,
+        "name": "Web - CPU",
+        "pos_x": 0,
+        "pos_y": 0,
+        "query": [
+          {
+            "promql": "topk(10,avg(avg_over_time(sysdig_host_cpu_used_percent{$__scope,agent_tag_Tag=~\"web\"}[$__interval])) by (host_hostname))",
+            "unit": "percent"
+          }
+        ],
+        "type": "timechart",
+        "width": 8
+      },
+      {
+        "description": "Web Layer http requests per second",
+        "height": 6,
+        "name": "Web - request/second",
+        "pos_x": 8,
+        "pos_y": 0,
+        "query": [
+          {
+            "promql": "sum(sum_over_time(sysdig_host_net_http_request_count{$__scope,agent_tag_Tag=~\"web\"}[$__interval]) / $__interval_sec)",
+            "unit": "number rate"
+          }
+        ],
+        "type": "timechart",
+        "width": 8
+      },
+      {
+        "description": "Web Layer http response time",
+        "height": 6,
+        "name": "Web - response time",
+        "pos_x": 16,
+        "pos_y": 0,
+        "query": [
+          {
+            "promql": "topk(10,avg(avg_over_time(sysdig_host_net_http_request_time{$__scope,agent_tag_Tag=~\"web\"}[$__interval])) by (host_hostname))",
+            "unit": "time"
+          }
+        ],
+        "type": "timechart",
+        "width": 8
+      },
+      {
+        "description": "Application Layer CPU Utilization",
+        "height": 6,
+        "name": "App - CPU",
+        "pos_x": 0,
+        "pos_y": 6,
+        "query": [
+          {
+            "promql": "topk(10,avg(avg_over_time(sysdig_host_cpu_used_percent{$__scope,agent_tag_Tag=~\"app\"}[$__interval])) by (host_hostname))",
+            "unit": "percent"
+          }
+        ],
+        "type": "timechart",
+        "width": 8
+      },
+      {
+        "description": "Application Layer http requests per second",
+        "height": 6,
+        "name": "App - request/second",
+        "pos_x": 8,
+        "pos_y": 6,
+        "query": [
+          {
+            "promql": "sum(sum_over_time(sysdig_host_net_http_request_count{$__scope,agent_tag_Tag=~\"app\"}[$__interval]) / $__interval_sec)",
+            "unit": "number rate"
+          }
+        ],
+        "type": "timechart",
+        "width": 8
+      },
+      {
+        "description": "Application Layer http response time",
+        "height": 6,
+        "name": "App - response time",
+        "pos_x": 16,
+        "pos_y": 6,
+        "query": [
+          {
+            "promql": "topk(10,avg(avg_over_time(sysdig_host_net_http_request_time{$__scope,agent_tag_Tag=~\"app\"}[$__interval])) by (host_hostname))",
+            "unit": "time"
+          }
+        ],
+        "type": "timechart",
+        "width": 8
+      }
+    ],
+    "scope": [
+      {
+        "metric": "host.hostName",
+        "variable": "hostname"
+      }
+    ]
+  }
+]

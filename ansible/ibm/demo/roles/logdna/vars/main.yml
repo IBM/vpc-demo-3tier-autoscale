@@ -1,0 +1,14 @@
+---
+# Support minimal distributions for demo purposes
+logdna_distributions: [
+  Ubuntu
+]
+
+logdna_os_family: [
+  Debian
+]
+
+logdna_apt_key: https://repo.logdna.com/logdna.gpg
+logdna_apt_repo: deb http://repo.logdna.com stable main
+
+logdna_network_retry: 5

@@ -1,0 +1,97 @@
+---
+# Install logdna
+
+# Check prereqs
+- name: Check platform for supported versions
+  ansible.builtin.assert:
+    that: (ansible_facts['distribution'] in logdna_distributions)
+    success_msg: Your OS, {{ ansible_facts['distribution'] }} is supported
+    fail_msg: Your OS, {{ ansible_facts['distribution'] }} is not supported 
+  when:
+    - logdna_install | bool
+  ignore_errors: true
+  tags: logdna_check_support
+
+- name: Check os family for supported versions
+  ansible.builtin.assert:
+    that: (ansible_facts['os_family'] in logdna_os_family)
+    success_msg: Your OS, {{ ansible_facts['os_family'] }} is supported
+    fail_msg: Your OS, {{ ansible_facts['os_family'] }} is not supported 
+  when:
+    - logdna_install | bool
+  ignore_errors: true
+  tags: logdna_check_support
+
+- name: Check logdna_key is set
+  ansible.builtin.assert:
+    that: (logdna_key is defined)
+    success_msg: logdna_key has been set - {{ logdna_key }}
+    fail_msg: logdna_key has not been set
+  when:
+    - logdna_install | bool
+  ignore_errors: true
+  tags: logdna_check_var_logdna_key
+
+- name: Check logdna_apihost is set
+  ansible.builtin.assert:
+    that: (logdna_apihost is defined)
+    success_msg: logdna_apihost has been set - {{ logdna_apihost }}
+    fail_msg: logdna_apihost has not been set
+  when:
+    - logdna_install | bool
+  ignore_errors: true
+  tags: logdna_check_var_logdna_apihost
+
+- name: Check logdna_loghost is set
+  ansible.builtin.assert:
+    that: (logdna_loghost is defined)
+    success_msg: logdna_loghost has been set - {{ logdna_loghost }}
+    fail_msg: logdna_loghost has not been set
+  when:
+    - logdna_install | bool
+  ignore_errors: true
+  tags: logdna_check_var_logdna_loghost
+
+
+- name: Check logdna_loghost is set
+  ansible.builtin.assert:
+    that: (logdna_loghost is defined)
+    success_msg: logdna_loghost has been set - {{ logdna_loghost }}
+    fail_msg: logdna_loghost has not been set
+  when:
+    - logdna_install | bool
+  ignore_errors: true
+  tags: logdna_check_var_logdna_loghost
+
+# Install packages based on os_family
+
+- name: Install logdna
+  block:
+  
+    - name: Install on Debian
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/install/install-debian.yml"
+      when: 
+        - ansible_facts['os_family'] == "Debian"
+      tags: logdna_install_debian
+
+  when: logdna_install | bool
+  tags: logdna_install
+
+# Configure logdna
+- name: Configure logdna
+  ansible.builtin.include_tasks: "{{ role_path }}/tasks/conf/configure-agent.yml"
+  tags: logdna_configure
+
+# Start logdna
+
+- name: Start logdna
+  block:
+
+    - name: Configure logdna
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/actions/start-debian.yml"
+      when:
+        - ansible_facts['os_family'] == "Debian"
+      tags: logdna_start_debian
+
+  tags: logdna_start
+

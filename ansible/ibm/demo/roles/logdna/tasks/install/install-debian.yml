@@ -1,0 +1,27 @@
+---
+
+# Install logdna public key
+- name: Download logdna apt public key
+  ansible.builtin.apt_key:
+    url: "{{ logdna_apt_key }}"
+    state: present
+  register: apt_key
+  retries: "{{ logdna_network_retry | int }}"
+  until: apt_key is success
+  tags: apt_key
+
+- name: Set logdna apt repository
+  apt_repository:
+    repo: "{{ logdna_apt_repo }}"
+  tags: apt_repo
+
+- name: Install logdna
+  apt:
+    state: present
+    name: logdna-agent
+    allow_unauthenticated: true
+    update_cache: true
+  register: apt_install
+  retries: "{{ logdna_network_retry | int }}"
+  until: apt_install is success
+  tags: apt_install

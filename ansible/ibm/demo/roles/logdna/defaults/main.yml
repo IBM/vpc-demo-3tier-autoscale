@@ -1,0 +1,14 @@
+---
+# Initialise all variables
+# note. logdna_key must be set so will not default to blank.
+
+logdna_install: True
+
+logdna_config: ""
+logdna_dirs: []
+logdna_logfile: []
+logdna_exclude: []
+logdna_exclude_regex: []
+logdna_hostname: ""
+logdna_tags: []
+

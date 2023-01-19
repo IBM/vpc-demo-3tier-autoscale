@@ -1,0 +1,11 @@
+---
+# vars file for demo
+demo_distributions: [
+  Ubuntu
+]
+
+demo_os_family: [
+  Debian
+]
+
+demo_network_retry: 10

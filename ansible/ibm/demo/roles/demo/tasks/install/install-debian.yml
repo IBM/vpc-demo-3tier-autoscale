@@ -1,0 +1,37 @@
+---
+# demo installation
+
+
+# Install pre-requisites
+
+- name: Upgrade pip3
+  shell: |
+    pip3 install --upgrade pip
+  register: pip3_upgrade
+  retries: "{{ demo_network_retry | int }}"
+  until: pip3_upgrade is success
+  tags: pip3_upgrade
+
+- name: Install uvicorn
+  shell: |
+    pip3 install fastapi uvicorn psycopg2-binary
+  register: uvicorn_install
+  retries: "{{ demo_network_retry | int }}"
+  until: uvicorn_install is success
+  tags: uvicorn_install
+
+# Copy application files
+
+- name: copy main
+  ansible.builtin.copy:
+    src: "{{ role_path }}/files/main.py"
+    dest: "{{ demo_dir }}/main.py"
+  tags:
+    - copy_main
+
+- name: copy postgresql
+  ansible.builtin.copy:
+    src: "{{ role_path }}/files/postgresql.py"
+    dest: "{{ demo_dir }}/postgresql.py"
+  tags:
+    - copy_postgresql

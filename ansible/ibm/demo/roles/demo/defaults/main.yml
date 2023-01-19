@@ -1,0 +1,9 @@
+---
+# defaults file for demo
+# the following must already be set by the environment
+#   demo_lb_back
+#   demo_role (front | back)
+
+demo_dir: "/root"
+demo_port: "8000"
+demo_name: "threetier"

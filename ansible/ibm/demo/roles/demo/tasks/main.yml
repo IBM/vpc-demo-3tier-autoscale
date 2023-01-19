@@ -1,0 +1,57 @@
+---
+# tasks file for demo
+# Check prereqs
+- name: Check platform for supported versions
+  ansible.builtin.assert:
+    that: (ansible_facts['distribution'] in demo_distributions)
+    success_msg: Your OS, {{ ansible_facts['distribution'] }} is supported
+    fail_msg: Your OS, {{ ansible_facts['distribution'] }} is not supported 
+  tags: demo_check_support
+
+- name: Check os family for supported versions
+  ansible.builtin.assert:
+    that: (ansible_facts['os_family'] in demo_os_family)
+    success_msg: Your OS, {{ ansible_facts['os_family'] }} is supported
+    fail_msg: Your OS, {{ ansible_facts['os_family'] }} is not supported 
+  tags: demo_check_support
+
+- name: Check demo_lb_back is set
+  ansible.builtin.assert:
+    that: (demo_lb_back is defined)
+    success_msg: demo_lb_back has been set - {{ demo_lb_back }}
+    fail_msg: demo_lb_back has not been set
+  tags: demo_check_var_demo_lb_back
+
+- name: Check demo_role is set
+  ansible.builtin.assert:
+    that: (demo_role is defined)
+    success_msg: demo_role has been set - {{ demo_role }}
+    fail_msg: demo_role has not been set
+  tags: demo_check_var_demo_role
+
+
+# Install packages based on os_family
+
+- name: Install demo
+  block:
+  
+    - name: Install on Debian
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/install/install-debian.yml"
+      when: 
+        - ansible_facts['os_family'] == "Debian"
+      tags: demo_install_debian
+
+  tags: demo_install
+
+# Configure Demo Service
+
+- name: Configure Demo Service
+  block:
+
+    - name: Configure on Debian
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/conf/configure-debian.yml"
+      when:
+        - ansible_facts['os_family'] == "Debian"
+      tags: demo_config_debian
+
+  tags: demo_config

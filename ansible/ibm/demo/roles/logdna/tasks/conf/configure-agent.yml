@@ -1,0 +1,64 @@
+---
+
+# Configure logdna agent parameters
+
+# Configure logdna agent parameters
+- name: Set logdna key
+  become: true
+  become_method: sudo
+  shell: "logdna-agent -k {{ logdna_key }}"
+
+- name: Set logdna alt config file
+  become: true
+  become_method: sudo
+  shell: "logdna-agent -c {{ logdna_config }}"
+  when: logdna_config != ""
+
+- name: Set logdna logging directories
+  become: true
+  become_method: sudo
+  shell: "logdna-agent -d {{ item }}"
+  loop: "{{ logdna_dirs }}"
+
+- name: Set logdna log files
+  become: true
+  become_method: sudo
+  shell: "logdna-agent -f {{ item }}"
+  loop: "{{ logdna_logfile }}"
+
+- name: Set logdna exlusion directories
+  become: true
+  become_method: sudo
+  shell: "logdna-agent -e {{ item }}"
+  loop: "{{ logdna_exclude }}"
+
+- name: Set logdna filter regex
+  become: true
+  become_method: sudo
+  shell: "logdna-agent -r {{ item }}"
+  loop: "{{ logdna_exclude_regex }}"
+
+- name: Set logdna hostname
+  become: true
+  become_method: sudo
+  shell: "logdna-agent -n {{ item }}"
+  when: logdna_hostname != ""
+
+- name: Setting Tags for This Host
+  become: true
+  become_method: sudo
+  shell: "logdna-agent -t {{ item }}"
+  loop: "{{ logdna_tags }}"
+
+- name: Set logdna api host
+  become: true
+  become_method: sudo
+  shell: "logdna-agent -s LOGDNA_APIHOST={{ logdna_apihost }}"
+  when: logdna_apihost != ""
+
+
+- name: Set logdna log host
+  become: true
+  become_method: sudo
+  shell: "logdna-agent -s LOGDNA_LOGHOST={{ logdna_loghost }}"
+  when: logdna_loghost != ""

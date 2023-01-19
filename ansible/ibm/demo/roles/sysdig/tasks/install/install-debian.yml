@@ -1,0 +1,31 @@
+---
+# Install pre-requisites
+
+- name: Install linux headers
+  become: true
+  apt:
+    name: linux-headers-{{ ansible_kernel }}
+    state: present
+  register: install_headers
+  retries: "{{ sysdig_network_retry | int }}"
+  until: install_headers is success
+  tags: linux_headers
+
+# Install sysdig
+
+- name: Install sysdig agent
+  shell: |
+    curl -s {{ sysdig_installer }} | sudo bash -s -- \
+      --access_key {{ sysdig_key }} \
+      --collector {{ sysdig_endpoint }} \
+      --collector_port {{ sysdig_port }} \
+      --secure true \
+      -ac "sysdig_capture_enabled: false" \
+      -t \"{{ sysdig_tags }}\"
+
+  register: sysdig_install
+  retries: "{{ sysdig_network_retry | int }}"
+  until: 
+    - dragent_pid is file
+    - sysdig_install is success
+  tags: sysdig_install

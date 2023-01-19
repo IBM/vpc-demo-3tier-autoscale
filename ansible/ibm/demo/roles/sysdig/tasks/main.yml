@@ -1,0 +1,71 @@
+---
+
+# Install sysdig
+
+# Check prereqs
+- name: Check platform for supported versions
+  ansible.builtin.assert:
+    that: (ansible_facts['distribution'] in sysdig_distributions)
+    success_msg: Your OS, {{ ansible_facts['distribution'] }} is supported
+    fail_msg: Your OS, {{ ansible_facts['distribution'] }} is not supported
+  when:
+    - sysdig_install | bool
+  ignore_errors: true
+  tags: sysdig_check_support
+
+- name: Check os family for supported versions
+  ansible.builtin.assert:
+    that: (ansible_facts['os_family'] in sysdig_os_family)
+    success_msg: Your OS, {{ ansible_facts['os_family'] }} is supported
+    fail_msg: Your OS, {{ ansible_facts['os_family'] }} is not supported
+  when:
+    - sysdig_install | bool
+  ignore_errors: true
+  tags: sysdig_check_support
+
+- name: Check sysdig_key is set
+  ansible.builtin.assert:
+    that: (sysdig_key is defined)
+    success_msg: sysdig_key has been set - {{ sysdig_key }}
+    fail_msg: sysdig_key has not been set
+  when:
+    - sysdig_install | bool
+  ignore_errors: true
+  tags: sysdig_check_var_sysdig_key
+
+- name: Check sysdig_endpoint is set
+  ansible.builtin.assert:
+    that: (sysdig_endpoint is defined)
+    success_msg: sysdig_endpoint has been set - {{ sysdig_endpoint }}
+    fail_msg: sysdig_endpoint has not been set
+  when:
+    - sysdig_install | bool
+  ignore_errors: true
+  tags: sysdig_check_var_sysdig_endpoint
+
+- name: Check sysdig_tags is set
+  ansible.builtin.assert:
+    that: (sysdig_tags is defined)
+    success_msg: sysdig_tags has been set - {{ sysdig_tags }}
+    fail_msg: sysdig_tags has not been set
+  when:
+    - sysdig_install | bool
+  ignore_errors: true
+  tags: sysdig_check_var_sysdig_tags
+
+
+
+# Install packages based on os_family
+
+- name: Install sysdig
+  block:
+
+    - name: Install on Debian
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/install/install-debian.yml"
+      when:
+        - ansible_facts['os_family'] == "Debian"
+        - sysdig_install_type == "service"
+      tags: sysdig_install_debian
+
+  when: sysdig_install | bool
+  tags: sysdig_install
